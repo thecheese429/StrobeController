@@ -1,142 +1,178 @@
-#include <BitBool.h>
-#include <OnewireKeypad.h>
+#include "constants.h"
+// #include <BitBool.h>
 
-#include "patterns.h"
-
-int mode = DEFAULTMODE;
 
 class Channel {
   private:
-    const long* intervals;
+    const int* intervals;
     int length;
-    int pinNum;
-    int index = 0;
+    byte pinNum;
+		
     long previousTime;
+    int pos = 0;
 
   public:
-    Channel(int channelIndex, int pinNum){
-      this->previousTime = 0;
-    }
-    void add(const long *intervals, int pinNum) {
-//      Serial.print("set interval ");
-      this->intervals = intervals;
-//      Serial.print("set pinNum ");
-      this->pinNum = pinNum;
-//      Serial.print("set previousTime ");
-      this->previousTime = 0;
-      
-      pinMode(this->pinNum,OUTPUT);
-//      Serial.print("set pinMode ");
-      
-      //calculate size of intervals array
+    Channel(){
+      this->intervals = NULL;
       this->length = 0;
-//      Serial.print("set length 0");
-      while (pgm_read_word_near(intervals + this->length) != -1) { this->length++; }
-//      Serial.print("calc length ");
-      int i;
-      for (i=0; i<length; i++){
-//        Serial.print(pgm_read_word_near(intervals + i));
-//        Serial.print(" ");
-      }
-//      Serial.println();
+      this->pinNum = 0;
+      this->previousTime = 0;
     }
-    void updateChannel(long currTime) {
-      Serial.print("time: ");
-      Serial.print(currTime);
-      Serial.print(" priev: ");
-      Serial.print(this->previousTime);
-      Serial.print(" interval: ");
-      Serial.print(pgm_read_word_near(intervals + index));
-      Serial.print(" index: ");
-      Serial.print(index);
-      Serial.print(" length: ");
-      Serial.print(this->length);
-      if ( currTime - previousTime >= pgm_read_word_near(intervals + index) ) {
+    Channel(const int* intervals, byte pinNum){
+      this->intervals = intervals;
+      this->length = 0;
+      this->pinNum = pinNum;
+      this->previousTime = 0;
+      pinMode(this->pinNum,OUTPUT);
+			Serial.print(" inter: ");
+			int j, val;
+      //calculate size of intervals array
+      while ( (int) pgm_read_word_near( intervals + this->length ) != -1) {
+				this->length++; 
+			}
+			
+			// Serial.print(" pin:");
+			// Serial.print(this->pinNum);
+			// Serial.print(" pos:");
+			// Serial.print(pos);
+			// Serial.print(" length:");
+			// Serial.print(this->length);
+			// Serial.println();
+    }
+    long update(long currTime) {
+			
+			long remainingTime;
+			// Serial.print(" curr:");
+			// Serial.print(currTime);
+			// Serial.print(" prev:");
+			// Serial.print(previousTime);
+			// Serial.print(" target:");
+			// Serial.print((int) pgm_read_word_near( intervals + pos ));
+			// Serial.print(" length:");
+			// Serial.print(this->length);
+			// Serial.println();
+			//check if channel state should be updated.
+      if ( remainingTime = (currTime - previousTime) >= (int) pgm_read_word_near( intervals + pos ) ) {
         previousTime = currTime;
-        if ( index % 2 == 1){ //if the current step in the interval sequence is odd, turn the pin on. Otherwise, turn it off.
+				//if the current step in the interval sequence is odd, turn the pin on. Otherwise, turn it off.
+        if ( pos % 2 == 1) { 
           digitalWrite(pinNum, HIGH);
-          Serial.print(" Odd");
-        }
-        else {
+					// Serial.print("pin: ");
+					// Serial.print(pinNum);
+					// Serial.println(" Up.");
+        } else {
           digitalWrite(pinNum, LOW);
-          Serial.print(" Even");
+					// Serial.print("pin: ");
+					// Serial.print(pinNum);
+					// Serial.println(" Down.");
         }
-        if ( index < this->length - 1 )  {//if the current interval is the last one in the array of intervals, reset to index 1
-          index++;
-          Serial.print(" Index++");
-        }
-        else {
-          index = 0;
-          Serial.print(" Index=0");
+				//if the current interval is the last one in the array of intervals, reset to index 0
+        if ( pos < this->length - 1 ) {
+          pos++;
+        } else {
+          pos = 0;
         }
       }
-      Serial.println();
+			return currTime + remainingTime;
     }
 };
 
 class Mode {
-    Channel channels[MAXPINS];
-    int channelIndex = 0;
-    int mode_pins_length;
-    int mode_pins[8];
-    int intervals_length[];
-    int a, i, j, len;
-  public:
-    Mode(int modeNumber) {
-      switch(modeNumber){
-        case 1:
-//          read in pin numbers
-//          get length of pin numbers array
-            for(i=0; a = pgm_read_word_near(mode1_pins + i)!=-1; i++){
-              mode_pins[i] = a;
-            }
-            mode_pins_length = i;
-
-//          get length of intervals
-            for(j=0;j<mode_pins_length;j++){
-              for(i=0; pgm_read_word_near(mode1_intervals[j][i])!=-1; i++){
-              }
-              intervals_length[j] = i;
-              
-              Serial.print("channel ");
-              Serial.print(j);
-              Serial.print(" is on pin ");
-              Serial.print(mode_pins[j]);              
-              Serial.print(" and the number of intervals is ");
-              Serial.println(intervals_length[j]);
-            }
-
-            for(channelIndex=0; channelIndex<mode_pins_length; channelIndex++){
-              channels[channelIndex] = Channel(channelIndex, mode_pins[channelIndex]);
-            }
-//add rest of cases, up to 12
-          break;
-        }
-      }
-    void updateChannels(long t) {
-      int i;
-      for (i=0; i < mode_pins_length; i++) {
-        channels[i].updateChannel(t);
-      }
+	private:
+		Channel channels[MAXPINS];
+		byte channel_count;
+ public:
+  Mode() {
+    this->channel_count = 0;
+  }
+	Mode(const int* const* channels, const byte* pins) {
+		this->channel_count = 0;
+		//count channels
+		int i;
+    byte pin;
+		for (i=0; (pin = (byte)pgm_read_byte_near(pins + i)) != 255; i++){
+			// Serial.print("pinNum: ");
+			// Serial.print(pin);
+			// Serial.print(" ");
+			//make channel from pointer channel
+			this->channels[i] = Channel( (const int*)pgm_read_ptr_near(channels+i), pin );
+		}
+		this->channel_count = i;
+	}
+//TODO return soonest update time
+  long update(long t) {
+		long soonest=10000;
+		long time;
+    int i;
+    for (i=0; i < channel_count; i++) {
+			if ( (time = channels[i].update(t)) < soonest){
+				soonest = time;
+			}
     }
+		return soonest;
+  }
 };
 
-void updateMode() {
-//read in mode from one wire keypad
+// int modeNum = 0;
+Mode updateMode(Mode mode) {
+// int incomingByte = -1;
+int modeNum = -1;
+	// send data only when you receive data:
+ 	if (Serial.available() > 0) {
+		// read the incoming byte:
+		modeNum = Serial.read() - '0' ;
+
+		// say what you got:
+		Serial.print("I received: ");
+		Serial.println(modeNum, DEC);
+	}
+	
+	for(int i = 13; i>=8; i--){
+		if(digitalRead(i)==LOW){
+			modeNum = i-8;
+			break;
+		}
+	}
+	switch (modeNum) {
+		case 0:
+			mode = Mode(mode0_data, mode0_pins);
+			break;
+		case 1:
+			mode = Mode(mode1_data, mode1_pins);
+			break;
+		case 2:
+			mode = Mode(mode2_data, mode2_pins);
+			break;
+		default:
+			break;
+	}
+	Serial.print("Mode ");
+	Serial.print(modeNum);
+	Serial.println(" has been selected.");
+	return mode;
 }
 
-void setup() {
+ Mode mode = Mode();
 
-  Serial.begin(9600);
+void setup() {
+	// Serial.begin(9600);
   while (!Serial);
-  
-  Mode mode = Mode(DEFAULTMODE);
+	
+	for(int i = 13; i>=8; i--){
+		pinMode(i,INPUT_PULLUP);
+	}
+ 
+  Serial.println("seting mode to mode0");
+  mode = Mode(mode1_data, mode1_pins);
   Serial.println("end of setup");
 }
 
 void loop() {
-//  Serial.println("loop");
-    updateMode();
-    mode.updateChannels(millis());
-    }
+	mode = updateMode(mode);
+	// waits until a pin needs to be updated.
+	static int soonest;
+	if (millis() > soonest) {
+		// TODO loop through each mode and set soonest to the smallest value.
+		mode.update(millis());
+	}
 }
