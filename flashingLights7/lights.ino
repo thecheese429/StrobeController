@@ -27,7 +27,7 @@ class Channel {
 			Serial.print(" inter: ");
 			int j, val;
       //calculate size of intervals array
-      while ( (int) pgm_read_word_near( intervals + this->length ) != -1) {
+      while ( (int) pgm_read_word_near( intervals + this->length ) != 0) {
 				this->length++; 
 			}
 			
@@ -55,7 +55,7 @@ class Channel {
       if ( remainingTime = (currTime - previousTime) >= (int) pgm_read_word_near( intervals + pos ) ) {
         previousTime = currTime;
 				//if the current step in the interval sequence is odd, turn the pin on. Otherwise, turn it off.
-        if ( pos % 2 == 1) { 
+        if ( pos > 0) { 
           digitalWrite(pinNum, HIGH);
 					// Serial.print("pin: ");
 					// Serial.print(pinNum);
