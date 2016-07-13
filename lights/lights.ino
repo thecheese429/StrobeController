@@ -24,7 +24,6 @@ class Channel {
       this->pinNum = pinNum;
       this->previousTime = 0;
       pinMode(this->pinNum,OUTPUT);
-			Serial.print(" inter: ");
 			int j, val;
       //calculate size of intervals array
       while ( (int) pgm_read_word_near( intervals + this->length ) != 0) {
@@ -59,14 +58,18 @@ class Channel {
 				//if the current interval is positive, turn on the light, and if it is negative, turn it off.
         if ( currentInterval > 0 ) { 
           digitalWrite(pinNum, HIGH);
-					// Serial.print("pin: ");
-					// Serial.print(pinNum);
-					// Serial.println(" Up.");
+					Serial.print("currentInterval: ");
+					Serial.print(currentInterval);
+					Serial.print("pin: ");
+					Serial.print(pinNum);
+					Serial.println(" Up.");
         } else {
           digitalWrite(pinNum, LOW);
-					// Serial.print("pin: ");
-					// Serial.print(pinNum);
-					// Serial.println(" Down.");
+					Serial.print("currentInterval: ");
+					Serial.print(currentInterval);
+					Serial.print("pin: ");
+					Serial.print(pinNum);
+					Serial.println(" Down.");
         }
 				//if the current interval is the last one in the array of intervals, reset to index 0
         if ( pos < this->length - 1 ) {
@@ -115,18 +118,12 @@ class Mode {
   }
 };
 
-// int modeNum = 0;
 Mode updateMode(Mode mode) {
-// int incomingByte = -1;
-int modeNum = -1;
+	int modeNum = -1;
 	// send data only when you receive data:
  	if (Serial.available() > 0) {
 		// read the incoming byte:
 		modeNum = Serial.read() - '0' ;
-
-		// say what you got:
-		Serial.print("I received: ");
-		Serial.println(modeNum, DEC);
 	}
 	
 	for(int i = 13; i>=8; i--){
@@ -146,7 +143,8 @@ int modeNum = -1;
 			mode = Mode(mode2_data, mode2_pins);
 			break;
 		default:
-			break;
+			// stops method immediately.
+			return mode;
 	}
 	Serial.print("Mode ");
 	Serial.print(modeNum);
@@ -154,19 +152,19 @@ int modeNum = -1;
 	return mode;
 }
 
- Mode mode = Mode();
+Mode mode = Mode();
 
 void setup() {
-	// Serial.begin(9600);
-  // while (!Serial);
-	
+	Serial.begin(9600);
+	while (!Serial);
+
 	for(int i = 13; i>=8; i--){
 		pinMode(i,INPUT_PULLUP);
 		}
- 
-  Serial.println("seting mode to mode0");
-  mode = Mode(mode0_data, mode0_pins);
-  Serial.println("end of setup");
+
+	Serial.println("seting mode to mode0");
+	mode = Mode(mode0_data, mode0_pins);
+	Serial.println("end of setup");
 }
 
 void loop() {
