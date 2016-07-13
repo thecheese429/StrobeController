@@ -42,6 +42,7 @@ class Channel {
     long update(long currTime) {
 			
 			long remainingTime;
+			int currentInterval;
 			// Serial.print(" curr:");
 			// Serial.print(currTime);
 			// Serial.print(" prev:");
@@ -52,10 +53,11 @@ class Channel {
 			// Serial.print(this->length);
 			// Serial.println();
 			//check if channel state should be updated.
-      if ( remainingTime = (currTime - previousTime) >= (int) pgm_read_word_near( intervals + pos ) ) {
+			currentInterval = pgm_read_word_near( intervals + pos );
+      if ( remainingTime = (currTime - previousTime) >= (int) abs( currentInterval ) ) {
         previousTime = currTime;
-				//if the current step in the interval sequence is odd, turn the pin on. Otherwise, turn it off.
-        if ( pos > 0) { 
+				//if the current interval is positive, turn on the light, and if it is negative, turn it off.
+        if ( currentInterval > 0 ) { 
           digitalWrite(pinNum, HIGH);
 					// Serial.print("pin: ");
 					// Serial.print(pinNum);
