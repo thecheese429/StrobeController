@@ -59,14 +59,14 @@ class Channel {
 				//if the current interval is positive, turn on the light, and if it is negative, turn it off.
         if ( currentInterval > 0 ) { 
           digitalWrite(pinNum, HIGH);
-					// Serial.print("pin: ");
-					// Serial.print(pinNum);
-					// Serial.println(" Up.");
+					Serial.print("pin: ");
+					Serial.print(pinNum);
+					Serial.println(" Up.");
         } else {
           digitalWrite(pinNum, LOW);
-					// Serial.print("pin: ");
-					// Serial.print(pinNum);
-					// Serial.println(" Down.");
+					Serial.print("pin: ");
+					Serial.print(pinNum);
+					Serial.println(" Down.");
         }
 				//if the current interval is the last one in the array of intervals, reset to index 0
         if ( pos < this->length - 1 ) {
@@ -145,27 +145,56 @@ int modeNum = -1;
 		case 2:
 			mode = Mode(mode2_data, mode2_pins);
 			break;
+		case 3:
+			mode = Mode(mode3_data, mode3_pins);
+			break;
+		case 4:
+			mode = Mode(mode4_data, mode4_pins);
+			break;
+		case 5:
+			mode = Mode(mode5_data, mode5_pins);
+			break;
+		case 6:
+			mode = Mode(mode6_data, mode6_pins);
+			break;
+		case 7:
+			mode = Mode(mode7_data, mode7_pins);
+			break;
+		case 8:
+			mode = Mode(mode8_data, mode8_pins);
+			break;
+		case 9:
+			mode = Mode(mode9_data, mode9_pins);
+			break;
+		case 10:
+			mode = Mode(mode10_data, mode10_pins);
+			break;
+		case 11:
+			mode = Mode(mode11_data, mode11_pins);
+			break;
 		default:
 			break;
 	}
-	Serial.print("Mode ");
-	Serial.print(modeNum);
-	Serial.println(" has been selected.");
+	if(modeNum != -1){
+		Serial.print("Mode ");
+		Serial.print(modeNum);
+		Serial.println(" has been selected.");
+	}
 	return mode;
 }
 
  Mode mode = Mode();
 
 void setup() {
-	// Serial.begin(9600);
-  // while (!Serial);
+	//Serial.begin(9600);
+  while (!Serial);
 	
 	for(int i = 13; i>=8; i--){
 		pinMode(i,INPUT_PULLUP);
 		}
  
   Serial.println("seting mode to mode0");
-  mode = Mode(mode0_data, mode0_pins);
+  mode = Mode(mode1_data, mode1_pins);
   Serial.println("end of setup");
 }
 
