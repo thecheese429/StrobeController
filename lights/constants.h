@@ -1,10 +1,10 @@
 #include <avr/pgmspace.h>
 
-#define LEFT 7
-#define CENTER 4
-#define BLUE 3
-#define RRED 6
-#define RIGHT 0
+#define LEFT 13
+#define CENTER 12
+#define BLUE 11
+#define RRED 10
+#define RIGHT 9
 
 #define MODE0 0
 #define MODE1 1
@@ -31,19 +31,19 @@
 //define the millisecond intervals between toggling the state of a given channel
 //Positive numbers are ON intervals, and negative numbers are OFF intervals.
 //The last number must be 0 or the program will not work.
-const int mode0_1[] PROGMEM = {-1000, 3000, -1000, 2000, 0};
-const int mode0_2[] PROGMEM = {-1000, 3000, -1000, 2000, 0};
-const int mode0_3[] PROGMEM = {-1000, 3000, -1000, 2000, 0};
-const int mode0_4[] PROGMEM = {-1000, 3000, -1000, 2000, 0};
-const int mode0_5[] PROGMEM = {-1000, 3000, -1000, 2000, 0};
+const int mode0_1[] PROGMEM = {-4000, 4000, -2000, -2000, 0};
+const int mode0_2[] PROGMEM = {100, -100, -500, 0};
+const int mode0_3[] PROGMEM = {100, -100, -500, 0};
+const int mode0_4[] PROGMEM = {100, -100, -500, 0};
+const int mode0_5[] PROGMEM = {100, -100, -500, 0};
 const int* const mode0_data[] PROGMEM = {mode0_1, mode0_2, mode0_3, mode0_4, mode0_5};
-const byte mode0_pins[] PROGMEM = {LEFT, CENTER, BLUE, RRED, RIGHT, 255};//define the names or pin numbers of the given output pins
+const byte mode0_pins[] PROGMEM = {LEFT, 255};//define the names or pin numbers of the given output pins
 
-const int mode1_1[] PROGMEM = {100, -2010, 0};
-const int mode1_2[] PROGMEM = {100, -2020, 0};
-const int mode1_3[] PROGMEM = {100, -2030, 0};
-const int mode1_4[] PROGMEM = {100, -2040, 0};
-const int mode1_5[] PROGMEM = {100, -2050, 0};
+const int mode1_1[] PROGMEM = { -310,10, 0};
+const int mode1_2[] PROGMEM = { -320,10, 0};
+const int mode1_3[] PROGMEM = { -330,10, 0};
+const int mode1_4[] PROGMEM = { -340,10, 0};
+const int mode1_5[] PROGMEM = { -350,10, 0};
 const int* const mode1_data[] PROGMEM = {mode1_1, mode1_2, mode1_3, mode1_4, mode1_5};
 const byte mode1_pins[] PROGMEM = {LEFT, CENTER, BLUE, RRED, RIGHT, 255};//define the names of the given output pins
 
@@ -87,13 +87,13 @@ const int mode6_5[] PROGMEM = {10, 10, 0};
 const int* const mode6_data[] PROGMEM = {mode6_1, mode6_2, mode6_3, mode6_4, mode6_5};
 const byte mode6_pins[] PROGMEM = {LEFT, CENTER, BLUE, RRED, RIGHT, 255};//define the names of the given output pins
 
-const int mode7_1[] PROGMEM = {10, 10, 0};
-const int mode7_2[] PROGMEM = {10, 10, 0};
-const int mode7_3[] PROGMEM = {10, 10, 0};
-const int mode7_4[] PROGMEM = {10, 10, 0};
-const int mode7_5[] PROGMEM = {10, 10, 0};
+const int mode7_1[] PROGMEM = {       30, -30, 30, -30, 30, -30, 30, -30, 30, -300, 30, -30, 30, -30, 30, -30, 30, -30, 30, -300, 100, -100, 100, -100, 100, -100, 100, -100, 0};
+const int mode7_2[] PROGMEM = { -300, 30, -30, 30, -30, 30, -30, 30, -30, 30, -300, 30, -30, 30, -30, 30, -30, 30, -30, 30, -100, 100, -100, 100, -100, 100, -100, 100,  0};
+const int mode7_3[] PROGMEM = { -2000, 0};
+const int mode7_4[] PROGMEM = { -2000, 0};
+const int mode7_5[] PROGMEM = { -2000, 0};
 const int* const mode7_data[] PROGMEM = {mode7_1, mode7_2, mode7_3, mode7_4, mode7_5};
-const byte mode7_pins[] PROGMEM = {LEFT, CENTER, BLUE, RRED, RIGHT, 255};//define the names of the given output pins
+const byte mode7_pins[] PROGMEM = {LEFT, CENTER, 255};//define the names of the given output pins
 
 const int mode8_1[] PROGMEM = {30, -30, 30, -30, 30, -30, 30, 30, -30, 30, -30, 30, -30, 30, -300, 300, -100, 100, -100, 100, -100, 100, -100, 0};
 const int mode8_2[] PROGMEM = { 20, -60, 20, -60, 20, -60, 20, -60, 20, -60, 20, -620, 0};

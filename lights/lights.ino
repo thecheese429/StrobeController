@@ -5,6 +5,7 @@
 class Channel {
   private:
     const int* intervals;
+		int currentInterval;
     int length;
     byte pinNum;
 		
@@ -14,15 +15,18 @@ class Channel {
   public:
     Channel(){
       this->intervals = NULL;
+      this->currentInterval = 0;
       this->length = 0;
       this->pinNum = 0;
       this->previousTime = 0;
+			
     }
     Channel(const int* intervals, byte pinNum){
       this->intervals = intervals;
       this->length = 0;
       this->pinNum = pinNum;
       this->previousTime = 0;
+			int pos = 0;
       pinMode(this->pinNum,OUTPUT);
 			Serial.print(" inter: ");
 			int j, val;
@@ -30,40 +34,25 @@ class Channel {
       while ( (int) pgm_read_word_near( intervals + this->length ) != 0) {
 				this->length++; 
 			}
-			
-			// Serial.print(" pin:");
-			// Serial.print(this->pinNum);
-			// Serial.print(" pos:");
-			// Serial.print(pos);
-			// Serial.print(" length:");
-			// Serial.print(this->length);
-			// Serial.println();
+			this->currentInterval = (int) pgm_read_word_near( intervals + 0 );
     }
     long update(long currTime) {
 			
-			long remainingTime;
-			int currentInterval;
-			// Serial.print(" curr:");
-			// Serial.print(currTime);
-			// Serial.print(" prev:");
-			// Serial.print(previousTime);
-			// Serial.print(" target:");
-			// Serial.print((int) pgm_read_word_near( intervals + pos ));
-			// Serial.print(" length:");
-			// Serial.print(this->length);
-			// Serial.println();
-			//check if channel state should be updated.
-			currentInterval = pgm_read_word_near( intervals + pos );
-      if ( remainingTime = (currTime - previousTime) >= (int) abs( currentInterval ) ) {
+      if ( currTime >= abs( this->currentInterval ) + previousTime ) {
         previousTime = currTime;
+				this->currentInterval = (int) pgm_read_word_near( intervals + pos );
 				//if the current interval is positive, turn on the light, and if it is negative, turn it off.
-        if ( currentInterval > 0 ) { 
+        if ( this->currentInterval > 0 ) {
           digitalWrite(pinNum, HIGH);
+					Serial.print("this->currentInterval: ");
+					Serial.print(this->currentInterval);
 					Serial.print("pin: ");
 					Serial.print(pinNum);
 					Serial.println(" Up.");
         } else {
           digitalWrite(pinNum, LOW);
+					Serial.print("this->currentInterval: ");
+					Serial.print(this->currentInterval);
 					Serial.print("pin: ");
 					Serial.print(pinNum);
 					Serial.println(" Down.");
@@ -75,7 +64,7 @@ class Channel {
           pos = 0;
         }
       }
-			return currTime + remainingTime;
+			return abs( this->currentInterval + previousTime ) - currTime;
     }
 };
 
@@ -120,18 +109,18 @@ Mode updateMode(Mode mode) {
 // int incomingByte = -1;
 int modeNum = -1;
 	// send data only when you receive data:
- 	if (Serial.available() > 0) {
+  	if (Serial.available() > 0) {
 		// read the incoming byte:
 		modeNum = Serial.read() - '0' ;
 
 		// say what you got:
 		Serial.print("I received: ");
 		Serial.println(modeNum, DEC);
-	}
+	} 
 	
-	for(int i = 13; i>=8; i--){
+	for(int i = 0; i<=8; i++){
 		if(digitalRead(i)==LOW){
-			modeNum = i-8;
+			modeNum = i;
 			break;
 		}
 	}
@@ -189,12 +178,12 @@ void setup() {
 	//Serial.begin(9600);
   while (!Serial);
 	
-	for(int i = 13; i>=8; i--){
+	for(int i = 0; i<=8; i++){
 		pinMode(i,INPUT_PULLUP);
 		}
  
   Serial.println("seting mode to mode0");
-  mode = Mode(mode1_data, mode1_pins);
+  mode = Mode(mode0_data, mode0_pins);
   Serial.println("end of setup");
 }
 
@@ -202,8 +191,8 @@ void loop() {
 	mode = updateMode(mode);
 	// waits until a pin needs to be updated.
 	static int soonest;
-	if (millis() > soonest) {
+	// if (millis() > soonest) {
 		// TODO loop through each mode and set soonest to the smallest value.
-		mode.update(millis());
-	}
+		soonest = mode.update(millis());
+	// }
 }
