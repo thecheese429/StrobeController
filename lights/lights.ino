@@ -9,7 +9,7 @@ class Channel {
     int length;
     byte pinNum;
 		
-    long previousTime;
+    long timeLastToggled;
     int pos = 0;
 
   public:
@@ -18,14 +18,14 @@ class Channel {
       this->currentInterval = 0;
       this->length = 0;
       this->pinNum = 0;
-      this->previousTime = 0;
+      this->timeLastToggled = 0;
 			
     }
     Channel(const int* intervals, byte pinNum){
       this->intervals = intervals;
       this->length = 0;
       this->pinNum = pinNum;
-      this->previousTime = 0;
+      this->timeLastToggled = 0;
 			int pos = 0;
       pinMode(this->pinNum,OUTPUT);
 			Serial.print(" inter: ");
@@ -35,11 +35,13 @@ class Channel {
 				this->length++; 
 			}
 			this->currentInterval = (int) pgm_read_word_near( intervals + 0 );
-    }
-    long update(long currTime) {
 			
-      if ( currTime >= abs( this->currentInterval ) + previousTime ) {
-        previousTime = currTime;
+			
+			
+    }
+    long update(long currTime) {			
+      if ( currTime >= ( abs( this->currentInterval ) + timeLastToggled ) || timeLastToggled == 0) {
+        timeLastToggled = currTime;
 				this->currentInterval = (int) pgm_read_word_near( intervals + pos );
 				//if the current interval is positive, turn on the light, and if it is negative, turn it off.
         if ( this->currentInterval > 0 ) {
@@ -64,7 +66,7 @@ class Channel {
           pos = 0;
         }
       }
-			return abs( this->currentInterval + previousTime ) - currTime;
+			return abs( this->currentInterval + timeLastToggled ) - currTime;
     }
 };
 
@@ -192,7 +194,6 @@ void loop() {
 	// waits until a pin needs to be updated.
 	static int soonest;
 	// if (millis() > soonest) {
-		// TODO loop through each mode and set soonest to the smallest value.
 		soonest = mode.update(millis());
 	// }
 }
