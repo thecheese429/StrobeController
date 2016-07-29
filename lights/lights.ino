@@ -1,5 +1,6 @@
+#include <BitBool.h>
+#include <OnewireKeypad.h>
 #include "constants.h"
-// #include <BitBool.h>
 
 
 class Channel {
@@ -120,12 +121,12 @@ int modeNum = -1;
 		Serial.println(modeNum, DEC);
 	} 
 	
-	for(int i = 0; i<=8; i++){
-		if(digitalRead(i)==LOW){
-			modeNum = i;
-			break;
-		}
-	}
+	// for(int i = 0; i<=8; i++){
+		// if(digitalRead(i)==LOW){
+			// modeNum = i;
+			// break;
+		// }
+	// }
 	switch (modeNum) {
 		case 0:
 			mode = Mode(mode0_data, mode0_pins);
@@ -177,12 +178,12 @@ int modeNum = -1;
  Mode mode = Mode();
 
 void setup() {
-	//Serial.begin(9600);
-  while (!Serial);
+	// Serial.begin(9600);
+  // while (!Serial);
 	
-	for(int i = 0; i<=8; i++){
-		pinMode(i,INPUT_PULLUP);
-		}
+	// for(int i = 0; i<=8; i++){
+		// pinMode(i,INPUT_PULLUP);
+		// }
  
   Serial.println("seting mode to mode0");
   mode = Mode(mode0_data, mode0_pins);
