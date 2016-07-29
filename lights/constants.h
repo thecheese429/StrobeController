@@ -14,6 +14,10 @@
 #define MODE5 5
 #define MODE6 6
 
+#define ROWRES 4700
+#define COLRES 1000
+#define VOLTREF 5000
+
 
 //define the pin number of the digital pins used for changing the mode
 /*

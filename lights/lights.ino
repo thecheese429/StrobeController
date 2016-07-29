@@ -1,5 +1,4 @@
-#include <BitBool.h>
-#include <OnewireKeypad.h>
+
 #include "constants.h"
 
 
@@ -47,18 +46,18 @@ class Channel {
 				//if the current interval is positive, turn on the light, and if it is negative, turn it off.
         if ( this->currentInterval > 0 ) {
           digitalWrite(pinNum, HIGH);
-					Serial.print("this->currentInterval: ");
-					Serial.print(this->currentInterval);
-					Serial.print("pin: ");
-					Serial.print(pinNum);
-					Serial.println(" Up.");
+					// Serial.print("this->currentInterval: ");
+					// Serial.print(this->currentInterval);
+					// Serial.print("pin: ");
+					// Serial.print(pinNum);
+					// Serial.println(" Up.");
         } else {
           digitalWrite(pinNum, LOW);
-					Serial.print("this->currentInterval: ");
-					Serial.print(this->currentInterval);
-					Serial.print("pin: ");
-					Serial.print(pinNum);
-					Serial.println(" Down.");
+					// Serial.print("this->currentInterval: ");
+					// Serial.print(this->currentInterval);
+					// Serial.print("pin: ");
+					// Serial.print(pinNum);
+					// Serial.println(" Down.");
         }
 				//if the current interval is the last one in the array of intervals, reset to index 0
         if ( pos < this->length - 1 ) {
@@ -127,6 +126,45 @@ int modeNum = -1;
 			// break;
 		// }
 	// }
+	int voltage = analogRead(A7);
+	
+	if(voltage > 990 && voltage < 998){
+		modeNum = 0;
+	}	
+	else if(voltage > 500 && voltage < 510){
+		modeNum = 1;
+	}
+	else if(voltage > 335 && voltage < 340){
+		modeNum = 2;
+	}
+	else if(voltage > 172 && voltage < 178){
+		modeNum = 3;
+	}
+	else if(voltage > 145 && voltage < 155){
+		modeNum = 4;
+	}
+	else if(voltage > 128 && voltage < 135){
+		modeNum = 5;
+	}
+	else if(voltage > 92 && voltage < 100){
+		modeNum = 6;
+	}
+	else if(voltage > 85 && voltage < 90){
+		modeNum = 7;
+	}
+	else if(voltage > 78 && voltage < 82){
+		modeNum = 8;
+	}
+	else if(voltage > 63 && voltage < 68){
+		modeNum = 9;
+	}
+	else if(voltage > 59 && voltage < 62){
+		modeNum = 10;
+	}
+	else if(voltage > 55 && voltage < 59){
+		modeNum = 11;
+	}
+	
 	switch (modeNum) {
 		case 0:
 			mode = Mode(mode0_data, mode0_pins);
@@ -168,18 +206,23 @@ int modeNum = -1;
 			break;
 	}
 	if(modeNum != -1){
-		Serial.print("Mode ");
-		Serial.print(modeNum);
-		Serial.println(" has been selected.");
+		// Serial.print("Mode ");
+		// Serial.print(modeNum);
+		// Serial.println(" has been selected.");
 	}
 	return mode;
 }
 
- Mode mode = Mode();
+Mode mode = Mode();
+int modeVolt[12];
+
 
 void setup() {
 	// Serial.begin(9600);
   // while (!Serial);
+	pinMode(A7, INPUT);
+	
+	
 	
 	// for(int i = 0; i<=8; i++){
 		// pinMode(i,INPUT_PULLUP);
@@ -188,6 +231,26 @@ void setup() {
   Serial.println("seting mode to mode0");
   mode = Mode(mode0_data, mode0_pins);
   Serial.println("end of setup");
+	
+	//Generate table of voltages for mode switch
+	// int modeVoltIndex = 0;
+	// for(int row=0; row<=3; row++){	
+		// for(int col=0; col<=2; col++){
+			// modeVolt[modeVoltIndex] = 50000 * COLRES / ( COLRES * col + ROWRES * row );
+			
+			// Serial.print("Mode ");
+			// Serial.print(modeVoltIndex);			
+			// Serial.print(" at (");
+			// Serial.print(col);			
+			// Serial.print(",");
+			// Serial.print(row);
+			// Serial.print(") should be around ");
+			// Serial.print(modeVolt[modeVoltIndex]);
+			// Serial.println(" millivolts.");
+			
+			// modeVoltIndex++;
+		// }
+	// }
 }
 
 void loop() {
