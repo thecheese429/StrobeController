@@ -1,6 +1,10 @@
-
+#include <BitBool.h>
+#include <OnewireKeypad.h>
 #include "constants.h"
 
+OnewireKeypad <Print, 12> keyPad(Serial, KEYS, Rows, Cols, Pin, Row_Res, Col_Res );
+int modeReadCounts = 0;
+int modeReadSum = 0;
 
 class Channel {
   private:
@@ -109,107 +113,61 @@ class Mode {
 // int modeNum = 0;
 Mode updateMode(Mode mode) {
 // int incomingByte = -1;
-int modeNum = -1;
-	// send data only when you receive data:
-  	if (Serial.available() > 0) {
-		// read the incoming byte:
-		modeNum = Serial.read() - '0' ;
-
-		// say what you got:
-		Serial.print("I received: ");
-		Serial.println(modeNum, DEC);
-	} 
+	char modeChar = '~';
 	
-	// for(int i = 0; i<=8; i++){
-		// if(digitalRead(i)==LOW){
-			// modeNum = i;
-			// break;
-		// }
-	// }
-	int voltage = analogRead(A7);
+	if( keyPad.Key_State() == 3){
+   modeChar = keyPad.Getkey();
+	 Serial.print("I have received ");
+	 Serial.print(modeChar);
+	 Serial.println(" as the current mode.");
+  } 
 	
-	if(voltage > 990 && voltage < 998){
-		modeNum = 0;
-	}	
-	else if(voltage > 500 && voltage < 510){
-		modeNum = 1;
-	}
-	else if(voltage > 335 && voltage < 340){
-		modeNum = 2;
-	}
-	else if(voltage > 172 && voltage < 178){
-		modeNum = 3;
-	}
-	else if(voltage > 145 && voltage < 155){
-		modeNum = 4;
-	}
-	else if(voltage > 128 && voltage < 135){
-		modeNum = 5;
-	}
-	else if(voltage > 92 && voltage < 100){
-		modeNum = 6;
-	}
-	else if(voltage > 85 && voltage < 90){
-		modeNum = 7;
-	}
-	else if(voltage > 78 && voltage < 82){
-		modeNum = 8;
-	}
-	else if(voltage > 63 && voltage < 68){
-		modeNum = 9;
-	}
-	else if(voltage > 59 && voltage < 62){
-		modeNum = 10;
-	}
-	else if(voltage > 55 && voltage < 59){
-		modeNum = 11;
-	}
 	
-	switch (modeNum) {
-		case 0:
+	switch (modeChar) {
+		case '1':
 			mode = Mode(mode0_data, mode0_pins);
 			break;
-		case 1:
+		case '2':
 			mode = Mode(mode1_data, mode1_pins);
 			break;
-		case 2:
+		case '3':
 			mode = Mode(mode2_data, mode2_pins);
 			break;
-		case 3:
+		case '4':
 			mode = Mode(mode3_data, mode3_pins);
 			break;
-		case 4:
+		case '5':
 			mode = Mode(mode4_data, mode4_pins);
 			break;
-		case 5:
+		case '6':
 			mode = Mode(mode5_data, mode5_pins);
 			break;
-		case 6:
+		case '7':
 			mode = Mode(mode6_data, mode6_pins);
 			break;
-		case 7:
+		case '8':
 			mode = Mode(mode7_data, mode7_pins);
 			break;
-		case 8:
+		case '9':
 			mode = Mode(mode8_data, mode8_pins);
 			break;
-		case 9:
+		case '*':
 			mode = Mode(mode9_data, mode9_pins);
 			break;
-		case 10:
+		case '0':
 			mode = Mode(mode10_data, mode10_pins);
 			break;
-		case 11:
+		case '#':
 			mode = Mode(mode11_data, mode11_pins);
 			break;
 		default:
 			break;
 	}
-	if(modeNum != -1){
+	// if(modeChar != '~'){
 		// Serial.print("Mode ");
-		// Serial.print(modeNum);
+		// Serial.print(modeChar);
 		// Serial.println(" has been selected.");
-	}
+	// }
 	return mode;
 }
 
@@ -218,10 +176,10 @@ int modeVolt[12];
 
 
 void setup() {
-	// Serial.begin(9600);
+	 Serial.begin(9600);
   // while (!Serial);
 	pinMode(A7, INPUT);
-	
+	keyPad.SetHoldTime(200);
 	
 	
 	// for(int i = 0; i<=8; i++){
