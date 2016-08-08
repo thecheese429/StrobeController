@@ -179,7 +179,7 @@ void setup() {
 	 Serial.begin(9600);
   // while (!Serial);
 	pinMode(A7, INPUT);
-	keyPad.SetHoldTime(200);
+	keyPad.SetHoldTime(100);
 	
 	
 	// for(int i = 0; i<=8; i++){
