@@ -1,10 +1,10 @@
 #include <avr/pgmspace.h>
 
-#define LEFT 2
+#define LEFT 6
 #define CENTER 3
 #define BLUE 4
 #define RRED 5
-#define RIGHT 6
+#define RIGHT 2
 
 #define MODE0 0
 #define MODE1 1
@@ -14,11 +14,13 @@
 #define MODE5 5
 #define MODE6 6
 
+
+//This data is used to initialize the oneWireKeypad
 #define Rows 4
 #define Cols 3
 #define Pin A7
 #define Row_Res 4700
-#define Col_Res 980
+#define Col_Res 980 //My resistors are labeled as 1k, but they measure closer to 980. This makes the keypad input much more stable. Your resistors may vary
 #define KEYPADAVERAGE 60
 
 char KEYS[]= {
@@ -69,11 +71,11 @@ const int mode3_5[] PROGMEM = {-4, 2, -2, 0};
 const int* const mode3_data[] PROGMEM = {mode3_1, mode3_2, mode3_3, mode3_4, mode3_5};
 const byte mode3_pins[] PROGMEM = {LEFT, CENTER, BLUE, RRED, RIGHT, 255};//define the names of the given output pins
 
-const int mode4_1[] PROGMEM = { -510,15, 0};    
-const int mode4_2[] PROGMEM = { -520,15, 0};    
-const int mode4_3[] PROGMEM = { -530,15, 0};    
-const int mode4_4[] PROGMEM = { -540,15, 0};    
-const int mode4_5[] PROGMEM = { -550,15, 0};    
+const int mode4_1[] PROGMEM = { -510,35, 0};    
+const int mode4_2[] PROGMEM = { -520,35, 0};    
+const int mode4_3[] PROGMEM = { -530,35, 0};    
+const int mode4_4[] PROGMEM = { -540,35, 0};    
+const int mode4_5[] PROGMEM = { -550,35, 0};    
 const int* const mode4_data[] PROGMEM = {mode4_1, mode4_2, mode4_3, mode4_4, mode4_5};
 const byte mode4_pins[] PROGMEM = {LEFT, CENTER, BLUE, RRED, RIGHT, 255};//define the names of the given output pins
 
@@ -117,19 +119,19 @@ const int mode9_5[] PROGMEM = { -20, 30, -70, 30, -70, 30, -70, 30, -70, 30, -70
 const int* const mode9_data[] PROGMEM = {mode9_1, mode9_2, mode9_3, mode9_4, mode9_5};
 const byte mode9_pins[] PROGMEM = {LEFT, CENTER, BLUE, RRED, RIGHT, 255};//define the names of the given output pins
 
-const int mode10_1[] PROGMEM = {30, -30, 30, -30, 30, -30, 30, 30, -30, 30, -30, 30, -30, 30, -300, -100, 100, -100, 100, -100, 100, -100, 0};  
+const int mode10_1[] PROGMEM = {-1400, 200, -200, 200, -200, 200, 0};  
 const int mode10_2[] PROGMEM = { 20, -60, 20, -60, 20, -60, 20, -60, 20, -60, 20, -620, 0};                                                     
 const int mode10_3[] PROGMEM = {-50,  5, -75, 5, -75, 5, -75, 5, -75, 5, -75, -590, 0};                                                         
 const int mode10_4[] PROGMEM = {-520, 20, -60, 20, -60, 20, -60, 20, -60, 20, -60, 20, -100, 0};                                                
-const int mode10_5[] PROGMEM = {-100, 100, -100, 100, -100, 100, -100, 30, -30, 30, -30, 30, -30, 30, 30, -30, 30, -30, 30, -30, 30, -300, 0};  
+const int mode10_5[] PROGMEM = {-200, 200, -200, 200, -200, 200, -1200, 0};  
 const int* const mode10_data[] PROGMEM = {mode10_1, mode10_2, mode10_3, mode10_4, mode10_5};
 const byte mode10_pins[] PROGMEM = {LEFT, CENTER, BLUE, RRED, RIGHT, 255};//define the names of the given output pins
 
-const int mode11_1[] PROGMEM = {50, -50, 50, -50, 50, -50, 50, -50, 50, -50, 500, -1000, 0};
-const int mode11_2[] PROGMEM = {1200, -200, 200, -200, 200, -200, 200, 0};
+const int mode11_1[] PROGMEM = {30, -70, 30, -70, 30, -70, 30, -70, 30, -70, 500, -1000, 0};
+const int mode11_2[] PROGMEM = {1200, -300, 100, -300, 100, -300, 100, 0};
 const int mode11_3[] PROGMEM = {-1190, 10, 0};
 const int mode11_4[] PROGMEM = {-1190, 10, 0};
-const int mode11_5[] PROGMEM = {-1000, 50, -50, 50, -50, 50, -50, 50, -50, 50, -50, 500, 0};
+const int mode11_5[] PROGMEM = {-1000, 30, -70, 30, -70, 30, -70, 30, -70, 30, -70, 500, 0};
 const int* const mode11_data[] PROGMEM = {mode11_1, mode11_2, mode11_3, mode11_4, mode11_5};
 const byte mode11_pins[] PROGMEM = {LEFT, CENTER, BLUE, RRED, RIGHT, 255};//define the names of the given output pins
 
