@@ -5,8 +5,8 @@
 OnewireKeypad <Print, 12> keyPad(Serial, KEYS, Rows, Cols, Pin, Row_Res, Col_Res );
 int modeReadCounts = 0;
 int modeReadSum = 0;
-byte registerD = b00000000; //digital pins 0 to 7
-byte registerB = b00000000; //digital pins from 8 to 13
+byte D = b00000000; //digital pins 0 to 7
+byte B = b00000000; //digital pins from 8 to 13
 
 class Channel {
   private:
@@ -93,6 +93,8 @@ class Mode {
     for (i=0; i < channel_count; i++) {
 			if ( (time = channels[i].update(t)) < soonest){
 				soonest = time;
+				PORTD = D;
+				PORTB = B;
 			}
     }
 		return soonest;
@@ -168,6 +170,6 @@ void loop() {
 	mode = updateMode(mode);
 	// waits until a pin needs to be updated.
 	static int soonest;
-		soonest = mode.update(millis());
+	soonest = mode.update(millis());
 
 }
