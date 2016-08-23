@@ -5,6 +5,8 @@
 OnewireKeypad <Print, 12> keyPad(Serial, KEYS, Rows, Cols, Pin, Row_Res, Col_Res );
 int modeReadCounts = 0;
 int modeReadSum = 0;
+byte registerD = b00000000; //digital pins 0 to 7
+byte registerB = b00000000; //digital pins from 8 to 13
 
 class Channel {
   private:
@@ -50,18 +52,8 @@ class Channel {
 				//if the current interval is positive, turn on the light, and if it is negative, turn it off.
         if ( this->currentInterval > 0 ) {
           digitalWrite(pinNum, HIGH);
-					// Serial.print("this->currentInterval: ");
-					// Serial.print(this->currentInterval);
-					// Serial.print("pin: ");
-					// Serial.print(pinNum);
-					// Serial.println(" Up.");
         } else {
           digitalWrite(pinNum, LOW);
-					// Serial.print("this->currentInterval: ");
-					// Serial.print(this->currentInterval);
-					// Serial.print("pin: ");
-					// Serial.print(pinNum);
-					// Serial.println(" Down.");
         }
 				//if the current interval is the last one in the array of intervals, reset to index 0
         if ( pos < this->length - 1 ) {
@@ -88,15 +80,12 @@ class Mode {
 		int i;
     byte pin;
 		for (i=0; (pin = (byte)pgm_read_byte_near(pins + i)) != 255; i++){
-			// Serial.print("pinNum: ");
-			// Serial.print(pin);
-			// Serial.print(" ");
 			//make channel from pointer channel
 			this->channels[i] = Channel( (const int*)pgm_read_ptr_near(channels+i), pin );
 		}
 		this->channel_count = i;
 	}
-//TODO return soonest update time
+//return soonest update time
   long update(long t) {
 		long soonest=10000;
 		long time;
@@ -110,9 +99,7 @@ class Mode {
   }
 };
 
-// int modeNum = 0;
 Mode updateMode(Mode mode) {
-// int incomingByte = -1;
 	char modeChar = '~';
 	
 	if( keyPad.Key_State() == 3){
@@ -163,11 +150,6 @@ Mode updateMode(Mode mode) {
 		default:
 			break;
 	}
-	// if(modeChar != '~'){
-		// Serial.print("Mode ");
-		// Serial.print(modeChar);
-		// Serial.println(" has been selected.");
-	// }
 	return mode;
 }
 
@@ -180,42 +162,12 @@ void setup() {
   // while (!Serial);
 	pinMode(A7, INPUT);
 	keyPad.SetHoldTime(100);
-	
-	
-	// for(int i = 0; i<=8; i++){
-		// pinMode(i,INPUT_PULLUP);
-		// }
- 
-  Serial.println("seting mode to mode0");
-  mode = Mode(mode0_data, mode0_pins);
-  Serial.println("end of setup");
-	
-	//Generate table of voltages for mode switch
-	// int modeVoltIndex = 0;
-	// for(int row=0; row<=3; row++){	
-		// for(int col=0; col<=2; col++){
-			// modeVolt[modeVoltIndex] = 50000 * COLRES / ( COLRES * col + ROWRES * row );
-			
-			// Serial.print("Mode ");
-			// Serial.print(modeVoltIndex);			
-			// Serial.print(" at (");
-			// Serial.print(col);			
-			// Serial.print(",");
-			// Serial.print(row);
-			// Serial.print(") should be around ");
-			// Serial.print(modeVolt[modeVoltIndex]);
-			// Serial.println(" millivolts.");
-			
-			// modeVoltIndex++;
-		// }
-	// }
 }
 
 void loop() {
 	mode = updateMode(mode);
 	// waits until a pin needs to be updated.
 	static int soonest;
-	// if (millis() > soonest) {
 		soonest = mode.update(millis());
-	// }
+
 }
