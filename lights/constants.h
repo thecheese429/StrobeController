@@ -65,7 +65,7 @@ const byte mode2_pins[] PROGMEM = {LEFT, CENTER, BLUE, RRED, RIGHT, 255};//defin
 
 const int mode3_1[] PROGMEM = {-1000, 0};
 const int mode3_2[] PROGMEM = { 50, -400, 0};
-const int mode3_3[] PROGMEM = { 10, -440 0};
+const int mode3_3[] PROGMEM = { 10, -440, 0};
 const int mode3_4[] PROGMEM = {-1000, 0};
 const int mode3_5[] PROGMEM = {-1000, 0};
 const int* const mode3_data[] PROGMEM = {mode3_1, mode3_2, mode3_3, mode3_4, mode3_5};
